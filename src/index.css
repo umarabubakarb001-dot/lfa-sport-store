@@ -1,0 +1,270 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  
+  /* Redefining slate palette to high-contrast deep dark values */
+  --color-slate-50: #020617;
+  --color-slate-100: #0f172a;
+  --color-slate-200: #1e293b;
+  --color-slate-300: #334155;
+  --color-slate-405: #475569;
+  --color-slate-500: #94a3b8;
+  --color-slate-600: #cbd5e1;
+  --color-slate-800: #f1f5f9;
+  --color-slate-900: #f8fafc;
+  --color-slate-950: #020617;
+}
+
+:root {
+  --bg-app: #f8fafc;
+  --text-app: #0f172a;
+  --bg-card: #ffffff;
+  --border-card: #cbd5e1;
+  --text-muted: #475569;
+  --bg-input: #ffffff;
+  --border-input: #cbd5e1;
+  --text-input: #0f172a;
+  --bg-table-header: #f1f5f9;
+  --hover-tr: rgba(241, 245, 249, 0.4);
+  --border-element: #e2e8f0;
+  --modal-overlay: rgba(15, 23, 42, 0.5);
+}
+
+.dark {
+  --bg-app: #020617;
+  --text-app: #f8fafc;
+  --bg-card: #0f172a;
+  --border-card: #1e293b;
+  --text-muted: #94a3b8;
+  --bg-input: #0f172a;
+  --border-input: #1e293b;
+  --text-input: #cbd5e1;
+  --bg-table-header: #0d1527;
+  --hover-tr: rgba(30, 41, 59, 0.4);
+  --border-element: #1e293b;
+  --modal-overlay: rgba(2, 6, 23, 0.85);
+}
+
+/* Base custom styles to guarantee professional typography & backgrounds */
+body {
+  background-color: var(--bg-app) !important;
+  color: var(--text-app) !important;
+  font-family: "Inter", sans-serif !important;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+h1, h2, h3, h4, th {
+  font-family: "Space Grotesk", sans-serif !important;
+  letter-spacing: -0.025em;
+  color: var(--text-app) !important;
+  transition: color 0.3s ease;
+}
+
+code, .font-mono {
+  font-family: "JetBrains Mono", monospace !important;
+}
+
+/* Immersive Card Theme Overrides */
+.bg-white {
+  background-color: var(--bg-card) !important;
+  border-color: var(--border-card) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
+  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease !important;
+}
+.dark .bg-white {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Form element controls and inputs */
+input, select, textarea {
+  background-color: var(--bg-input) !important;
+  border: 1px solid var(--border-input) !important;
+  color: var(--text-input) !important;
+  border-radius: 12px !important;
+  padding: 0.625rem 1rem !important;
+  font-size: 0.8125rem !important;
+  transition: all 0.2s ease !important;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #2dd4bf !important;
+  box-shadow: 0 0 10px rgba(45, 212, 191, 0.15) !important;
+  outline: none !important;
+}
+
+/* Buttons style overrides */
+button {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+/* Table overrides */
+table {
+  width: 100%;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+}
+
+thead th {
+  background-color: var(--bg-table-header) !important;
+  color: var(--text-muted) !important;
+  border-bottom: 1.5px solid var(--border-element) !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  font-size: 0.6875rem !important;
+  letter-spacing: 0.05em !important;
+  transition: background-color 0.3s ease, border-color 0.3s ease !important;
+}
+
+tbody tr {
+  background-color: var(--bg-card) !important;
+  transition: background-color 0.15s ease !important;
+}
+
+tbody tr:hover {
+  background-color: var(--hover-tr) !important;
+}
+
+td {
+  border-bottom: 1px solid var(--border-element) !important;
+  color: var(--text-input) !important;
+  transition: border-color 0.3s ease, color 0.3s ease !important;
+}
+
+/* Modals background overlay styling */
+.bg-[#0f172a], .bg-[#020617], .bg-slate-900\/50, .bg-black\/50, .bg-slate-950\/80 {
+  background-color: var(--modal-overlay);
+  backdrop-filter: blur(8px) !important;
+  transition: background-color 0.3s ease !important;
+}
+
+/* Dialog inner containers */
+dialog, [role="dialog"], .modal-container, .modal-inner-container {
+  background-color: var(--bg-card) !important;
+  border: 1px solid var(--border-element) !important;
+  border-radius: 24px !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1) !important;
+  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease !important;
+}
+.dark dialog, .dark [role="dialog"], .dark .modal-container, .dark .modal-inner-container {
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Scrollbars customization for premium sleek interface */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-app);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-element);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* Badge colors */
+.bg-emerald-50, .bg-emerald-50\/40 {
+  background-color: rgba(45, 212, 191, 0.05) !important;
+}
+
+.text-emerald-600, .text-emerald-700, .text-emerald-800 {
+  color: #0d9488 !important;
+}
+.dark .text-emerald-600, .dark .text-emerald-700, .dark .text-emerald-800 {
+  color: #2dd4bf !important;
+}
+
+.bg-emerald-100 {
+  background-color: rgba(45, 212, 191, 0.12) !important;
+}
+
+.bg-sky-50, .bg-blue-50 {
+  background-color: rgba(59, 130, 246, 0.05) !important;
+}
+
+.text-sky-600, .text-blue-600 {
+  color: #2563eb !important;
+}
+.dark .text-sky-600, .dark .text-blue-600 {
+  color: #3b82f6 !important;
+}
+
+.bg-sky-100, .bg-blue-100 {
+  background-color: rgba(59, 130, 246, 0.12) !important;
+}
+
+.bg-amber-50, .bg-amber-50\/50 {
+  background-color: rgba(245, 158, 11, 0.05) !important;
+}
+
+.text-amber-600, .text-amber-700, .text-amber-800, .text-amber-900 {
+  color: #d97706 !important;
+}
+.dark .text-amber-600, .dark .text-amber-700, .dark .text-amber-800, .dark .text-amber-900 {
+  color: #f59e0b !important;
+}
+
+.bg-amber-100 {
+  background-color: rgba(245, 158, 11, 0.12) !important;
+}
+
+.bg-red-50, .bg-red-500\/10 {
+  background-color: rgba(239, 68, 68, 0.05) !important;
+}
+
+.text-red-500, .text-red-650, .text-red-600, .text-red-800 {
+  color: #dc2626 !important;
+}
+.dark .text-red-500, .dark .text-red-650, .dark .text-red-605, .dark .text-red-600, .dark .text-red-800 {
+  color: #f87171 !important;
+}
+
+.border-red-200 {
+  border-color: rgba(239, 68, 68, 0.2) !important;
+}
+
+/* Specific component cleanups so they remain readable in dark theme */
+.text-slate-900, .text-slate-850, .text-slate-800, .text-slate-705, .text-slate-700 {
+  color: var(--text-app) !important;
+}
+
+.text-slate-600 {
+  color: var(--text-muted) !important;
+}
+
+.text-slate-500 {
+  color: var(--text-muted) !important;
+}
+
+.border-slate-100, .border-slate-150, .border-slate-200, .border-slate-300, .border-slate-800, .border-slate-850 {
+  border-color: var(--border-card) !important;
+}
+
+.bg-slate-50, .bg-slate-100, .bg-slate-50\/50 {
+  background-color: var(--bg-table-header) !important;
+}
+
+/* Login inputs */
+.bg-slate-950, .bg-slate-900 {
+  background-color: var(--bg-table-header) !important;
+}
+
+/* Ensure dynamic model confidence info fits dark card */
+.bg-slate-100.p-3.rounded-xl.border {
+  background-color: var(--bg-table-header) !important;
+  border-color: var(--border-card) !important;
+}
+
+/* Correct dashboard donut center typography */
+#donut-center-kpi span {
+  color: var(--text-app) !important;
+}

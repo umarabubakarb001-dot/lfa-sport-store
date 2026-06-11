@@ -1,0 +1,8 @@
+{
+  "name": "LFA Sport Store Analytics & Forecasting",
+  "description": "Professional sales analytics and AI-powered forecasting dashboard tailored for the store manager of LFA Sport Store.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
