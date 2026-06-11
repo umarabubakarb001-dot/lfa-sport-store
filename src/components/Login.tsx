@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { Loader2, AlertCircle, ShieldAlert } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Lock, User, AlertCircle, Sparkles, Sun, Moon } from 'lucide-react';
 // @ts-ignore
 import lfaLogo from '../assets/images/lfa_logo_1781030825177.png';
 
 interface LoginProps {
-  onLoginSuccess: (token: string, user: any) => void;
-  theme: 'light' | 'dark';
-  onThemeToggle: () => void;
+  onLoginSuccess: (token: string, user: { id: string; username: string; email: string; fullName: string }) => void;
+  theme?: 'light' | 'dark';
+  onThemeToggle?: () => void;
 }
 
 export default function Login({ onLoginSuccess, theme, onThemeToggle }: LoginProps) {
@@ -16,13 +16,18 @@ export default function Login({ onLoginSuccess, theme, onThemeToggle }: LoginPro
   const [errorStr, setErrorStr] = useState<string | null>(null);
   const [showWelcome, setShowWelcome] = useState(true);
 
+  // Auto-transition splash screen after 3 seconds
+  useEffect(() => {
+    if (showWelcome) {
+      const timer = setTimeout(() => {
+        setShowWelcome(false);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [showWelcome]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!username.trim() || !password.trim()) {
-      setErrorStr('Please input administrative username and credentials.');
-      return;
-    }
-
     setLoading(true);
     setErrorStr(null);
 
@@ -30,112 +35,155 @@ export default function Login({ onLoginSuccess, theme, onThemeToggle }: LoginPro
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ username: username.trim(), password })
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        throw new Error(data.error || 'Invalid manager access code key.');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Invalid login details.');
       }
 
+      const data = await response.json();
       onLoginSuccess(data.token, data.user);
-    } catch (err) {
-      setErrorStr(err instanceof Error ? err.message : 'Login validation failed. Try again.');
+    } catch (err: any) {
+      setErrorStr(err.message || 'Server connection failed.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-slate-50 dark:bg-[#020617] relative overflow-hidden transition-colors duration-300">
-      {/* Background decorations */}
-      <div className="absolute inset-0 z-0 pointer-events-none opacity-30">
-        <div className="absolute top-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-teal-500/10 blur-3xl" />
-        <div className="absolute bottom-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-indigo-500/10 blur-3xl" />
+    <div className="min-h-screen bg-[#020617] text-[#f8fafc] flex flex-col items-center justify-center p-4 relative overflow-hidden" id="login-container">
+      {/* Glowing background gradient matching the dashboard perfectly */}
+      <div 
+        className="absolute inset-0 z-0 pointer-events-none" 
+        style={{
+          background: 'radial-gradient(circle at top right, rgba(45, 212, 191, 0.08), transparent 60%), radial-gradient(circle at bottom left, rgba(30, 58, 138, 0.12), transparent 70%)',
+        }}
+      />
+
+      {/* LFA Background Watermark - High Visibility, centered on the page at 15% opacity to stand out beautifully */}
+      <div className="absolute inset-0 z-0 pointer-events-none flex items-center justify-center select-none overflow-hidden opacity-[0.15]">
+        <img 
+          src={lfaLogo}
+          alt="LFA Background Watermark"
+          referrerPolicy="no-referrer"
+          className="w-[110vh] h-[110vh] max-w-[900px] max-h-[900px] object-contain shrink-0 animate-pulse duration-[8000ms]"
+        />
       </div>
 
-      <div className="w-full max-w-md bg-white dark:bg-[#0f172a] border border-slate-200/80 dark:border-[#1e293b] rounded-2xl relative z-10 overflow-hidden shadow-2xl transition-all duration-300" id="login-form-card">
-        {/* Upper Accent highlight */}
-        <div className="h-1.5 bg-gradient-to-r from-teal-500 via-indigo-500 to-teal-400" />
-        
-        <div className="p-8 space-y-7">
+      {showWelcome ? (
+        /* ================= WELCOME SPLASH PORTAL PAGE ================= */
+        <div 
+          className="z-10 flex flex-col items-center text-center animate-in fade-in zoom-in-95 duration-700 ease-out transition-all space-y-6" 
+          id="welcome-portal-panel"
+        >
+          {/* Glowing LFA Logo */}
+          <div className="relative group" id="welcome-logo-halo">
+            <div className="absolute -inset-4 bg-teal-500/30 rounded-full blur-2xl animate-pulse" />
+            <img 
+              src={lfaLogo} 
+              alt="LFA Sport Store Master Logo"
+              referrerPolicy="no-referrer"
+              className="relative w-36 h-36 rounded-3xl object-cover shadow-2xl border-2 border-teal-500/30"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <h1 className="text-4xl font-extrabold tracking-widest text-[#f8fafc] uppercase">
+              LFA SPORT
+            </h1>
+            <div className="h-[2px] w-12 bg-teal-400 mx-auto rounded-full" />
+          </div>
+        </div>
+      ) : (
+        /* ================= AUTH LOGIN SCREEN MODULE ================= */
+        <div 
+          className="w-full max-w-sm bg-[#070b19]/30 border border-slate-800/30 p-8 rounded-3xl shadow-2xl space-y-6 z-10 backdrop-blur-[2px] animate-in fade-in duration-500 relative" 
+          id="login-card"
+        >
+          {/* Branding Title */}
           <div className="text-center space-y-3">
             <img 
               src={lfaLogo}
               alt="LFA Logo"
               referrerPolicy="no-referrer"
-              className="w-16 h-16 mx-auto rounded-2xl object-cover border-2 border-slate-100 dark:border-[#1e293b]"
-              id="login-logo-image"
+              className="w-14 h-14 rounded-2xl object-cover border border-slate-800 mx-auto"
+              id="login-brand-logo"
             />
-            <div className="space-y-1">
-              <h1 className="font-sans font-bold text-slate-900 dark:text-white text-xl tracking-tight uppercase">
-                LFA Sport Portal
-              </h1>
-              <p className="text-xs text-slate-500 dark:text-[#94a3b8] font-mono uppercase tracking-widest">
-                Manager Entry Control
-              </p>
+            <div className="space-y-0.5">
+              <h2 className="text-xl font-bold text-white tracking-widest uppercase text-center">Manager Login</h2>
+              <p className="text-[11px] text-slate-400 font-medium text-center">Provide credentials to enter LFA control center</p>
             </div>
           </div>
 
-          {errorStr && (
-            <div className="p-3.5 bg-red-500/10 border border-red-500/20 text-red-500 rounded-xl flex items-start gap-2.5 animate-pulse" id="login-error-alert">
-              <ShieldAlert size={16} className="shrink-0 mt-0.5" />
-              <p className="text-xs font-semibold leading-relaxed font-mono">{errorStr}</p>
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-4" id="login-credentials-form">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* User field */}
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest font-mono">
-                Corporate Username
-              </label>
-              <input
-                type="text"
-                required
-                placeholder="Enter username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                disabled={loading}
-                className="w-full px-4 py-3 bg-slate-50 dark:bg-[#020617] border border-slate-200 dark:border-[#1e293b]/70 rounded-xl text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-teal-500 dark:focus:border-[#2dd4bf] focus:ring-1 focus:ring-teal-500 transition-all font-mono placeholder-slate-400"
-                id="login-input-username"
-              />
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Manager Username</label>
+              <div className="relative">
+                <User className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" size={14} />
+                <input
+                  type="text"
+                  required
+                  placeholder="Enter username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  id="login-username-input"
+                  className="w-full bg-[#020617]/50 border border-slate-800/60 rounded-xl py-2 pl-9 pr-4 text-xs font-semibold text-slate-200 placeholder-slate-600 focus:outline-hidden focus:border-teal-500/50"
+                />
+              </div>
             </div>
 
+            {/* Password field */}
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest font-mono">
-                Access Password
-              </label>
-              <input
-                type="password"
-                required
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                disabled={loading}
-                className="w-full px-4 py-3 bg-slate-50 dark:bg-[#020617] border border-slate-200 dark:border-[#1e293b]/70 rounded-xl text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-teal-500 dark:focus:border-[#2dd4bf] focus:ring-1 focus:ring-teal-500 transition-all font-mono placeholder-slate-400"
-                id="login-input-password"
-              />
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Manager Password</label>
+              <div className="relative">
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" size={14} />
+                <input
+                  type="password"
+                  required
+                  placeholder="Enter password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  id="login-password-input"
+                  className="w-full bg-[#020617]/50 border border-slate-800/60 rounded-xl py-2 pl-9 pr-4 text-xs font-semibold text-slate-200 placeholder-slate-600 focus:outline-hidden focus:border-teal-500/50"
+                />
+              </div>
             </div>
 
+            {/* Validation Banner */}
+            {errorStr && (
+              <div className="p-3 bg-red-500/10 border border-red-500/25 text-red-400 text-xs text-left rounded-xl flex items-start gap-2" id="login-error-card">
+                <AlertCircle size={15} className="shrink-0 mt-0.5" />
+                <span className="leading-tight">{errorStr}</span>
+              </div>
+            )}
+
+            {/* Submit */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3.5 mt-2 bg-slate-900 border border-slate-800 hover:bg-black dark:bg-[#38bdf8] dark:hover:bg-[#0284c7] text-white dark:text-slate-950 text-sm font-bold uppercase tracking-wider rounded-xl transition-all shadow-lg active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
-              id="btn-login-submit"
+              id="btn-login"
+              className="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 active:scale-95 active:brightness-90 disabled:from-slate-800 disabled:to-slate-800 disabled:text-slate-500 text-slate-950 font-black rounded-xl text-xs tracking-wider transition-all duration-100 shadow-lg cursor-pointer uppercase flex items-center justify-center gap-2 select-none"
             >
-              {loading ? (
-                <>
-                  <Loader2 size={16} className="animate-spin" />
-                  <span>Authorizing...</span>
-                </>
-              ) : (
-                <span>Access System</span>
-              )}
+              {loading ? 'Authenticating Access...' : 'Access System'}
             </button>
           </form>
+
+          <div className="space-y-2 text-center">
+            <p className="text-[10px] text-slate-500 tracking-wide leading-relaxed">
+              Authorized management credentials can be updated under settings menu anytime.
+            </p>
+            <div className="p-2 border border-slate-800/20 bg-slate-900/40 rounded-lg">
+              <span className="text-[9px] font-mono text-teal-400 block font-semibold uppercase tracking-wider">Default Seed Credentials</span>
+              <p className="text-[10px] font-mono text-slate-400 mt-0.5">
+                Username: <span className="text-slate-200 font-bold">manager</span> &bull; Password: <span className="text-slate-200 font-bold">lfa2026</span>
+              </p>
+            </div>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
