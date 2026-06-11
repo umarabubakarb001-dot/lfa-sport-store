@@ -139,7 +139,7 @@ export class Database {
   private resetToDefaults() {
     const defaultManager: User & { passwordHash: string } = {
       id: 'manager-1',
-      username: '',
+      username: 'MM Suraj',
       email: 'mmsuraj@lfasport.com',
       fullName: 'Muhammad Suraj',
       passwordHash: hashPassword('lfa2026') // default password is lfa2026
