@@ -8,7 +8,7 @@ import DefenseGuide from './components/DefenseGuide';
 import Login from './components/Login';
 import Settings from './components/Settings';
 import { Product, SaleRecord, User } from './types';
-import { Loader2, LogOut, AlertTriangle, X, Sun, Moon } from 'lucide-react';
+import { Loader2, LogOut, AlertTriangle, X, Sun, Moon, Menu } from 'lucide-react';
 // @ts-ignore
 import lfaLogo from './assets/images/lfa_logo_1781030825177.png';
 
@@ -18,7 +18,8 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [loading, setLoading] = useState(true);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
-
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false); // Track the mobile toggle flag
+  
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     const savedTheme = localStorage.getItem('lfa_theme');
     if (savedTheme === 'light' || savedTheme === 'dark') {
@@ -324,25 +325,58 @@ export default function App() {
         />
       </div>
 
-      {/* Sidebar - relative and z-10 so it overlays correctly */}
-      <div className="relative z-10 h-full shrink-0">
+      {/* Sidebar overlay backdrop for mobile screens */}
+      {mobileSidebarOpen && (
+        <div 
+          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-xs md:hidden"
+          onClick={() => setMobileSidebarOpen(false)}
+          id="mobile-sidebar-backdrop"
+        />
+      )}
+
+      {/* Sidebar - relative or fixed slideover drawer depending on mobile/desktop screen size */}
+      <div 
+        className={`fixed inset-y-0 left-0 z-50 transform h-full shrink-0 transition-transform duration-300 ease-in-out md:static md:translate-x-0 ${
+          mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+        id="sidebar-container-wrapper"
+      >
         <Sidebar 
           activeTab={activeTab} 
-          setActiveTab={setActiveTab} 
+          setActiveTab={(tab) => {
+            setActiveTab(tab);
+            setMobileSidebarOpen(false); // Auto-close drawer on mobile when clicking a tab
+          }} 
           user={user} 
-          onLogout={() => setShowLogoutModal(true)} 
+          onLogout={() => {
+            setMobileSidebarOpen(false);
+            setShowLogoutModal(true);
+          }} 
+          onCloseMobile={() => setMobileSidebarOpen(false)}
         />
       </div>
 
-      {/* Main viewport area - relative and z-10 */}
-      <main className="relative z-10 flex-1 overflow-y-auto p-8 flex flex-col" id="tab-viewport-scroll">
-        <div className="max-w-7xl mx-auto w-full flex items-center justify-between border-b border-slate-200 dark:border-[#1e293b] pb-5 mb-6 shrink-0" id="executive-topbar">
-          <div className="space-y-0.5">
-            <span className="text-[10px] font-bold text-teal-600 dark:text-teal-400 font-mono tracking-widest uppercase">LFA SPORT ADMINISTRATIVE PORTAL</span>
-            <div className="flex items-center gap-1.5">
-              <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider">SYSTEMS</span>
-              <span className="text-slate-400 dark:text-slate-600 text-[10px] font-bold">/</span>
-              <span className="text-xs font-bold text-slate-800 dark:text-slate-200 capitalize tracking-wide font-mono">{activeTab === 'defense' ? 'Defense Viva' : activeTab} Manager</span>
+      {/* Main viewport area - relative and z-10 with responsive p-4 on mobile and p-8 on desktop */}
+      <main className="relative z-10 flex-1 overflow-y-auto p-4 sm:p-8 flex flex-col" id="tab-viewport-scroll">
+        <div className="max-w-7xl mx-auto w-full flex items-center justify-between border-b border-slate-200 dark:border-[#1e293b] pb-5 mb-6 shrink-0 gap-3" id="executive-topbar">
+          <div className="flex items-center gap-3">
+            {/* Mobile Hamburger menu toggle */}
+            <button
+              onClick={() => setMobileSidebarOpen(true)}
+              className="md:hidden p-2 -ml-1 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 rounded-xl transition-all cursor-pointer"
+              title="Open Navigation"
+              id="btn-mobile-menu-toggle"
+            >
+              <Menu size={20} />
+            </button>
+
+            <div className="space-y-0.5">
+              <span className="text-[10px] font-bold text-teal-600 dark:text-teal-400 font-mono tracking-widest uppercase">LFA SPORT ADMINISTRATIVE PORTAL</span>
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider">SYSTEMS</span>
+                <span className="text-slate-400 dark:text-slate-600 text-[10px] font-bold">/</span>
+                <span className="text-xs font-bold text-slate-800 dark:text-slate-200 capitalize tracking-wide font-mono">{activeTab === 'defense' ? 'Defense Viva' : activeTab} Manager</span>
+              </div>
             </div>
           </div>
           

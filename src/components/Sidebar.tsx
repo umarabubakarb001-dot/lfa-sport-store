@@ -4,11 +4,9 @@ import {
   Package, 
   ShoppingBag, 
   TrendingUp, 
-  GraduationCap, 
   LogOut, 
-  Store,
-  User,
-  Settings
+  Settings,
+  X
 } from 'lucide-react';
 import { User as UserType } from '../types';
 // @ts-ignore
@@ -19,9 +17,10 @@ interface SidebarProps {
   setActiveTab: (tab: string) => void;
   user: UserType;
   onLogout: () => void;
+  onCloseMobile?: () => void;
 }
 
-export default function Sidebar({ activeTab, setActiveTab, user, onLogout }: SidebarProps) {
+export default function Sidebar({ activeTab, setActiveTab, user, onLogout, onCloseMobile }: SidebarProps) {
   const menuItems = [
     { id: 'dashboard', label: 'Analytics Dashboard', icon: LayoutDashboard },
     { id: 'inventory', label: 'Product Inventory', icon: Package },
@@ -32,18 +31,31 @@ export default function Sidebar({ activeTab, setActiveTab, user, onLogout }: Sid
   return (
     <aside className="w-64 bg-white dark:bg-[#0f172a] text-slate-800 dark:text-[#f8fafc] flex flex-col h-full border-r border-slate-200 dark:border-[#1e293b] overflow-y-auto transition-colors duration-300" id="lfa-sidebar">
       {/* Header Banner */}
-      <div className="p-6 border-b border-slate-200 dark:border-[#1e293b] flex items-center gap-3">
-        <img 
-          src={lfaLogo}
-          alt="LFA Logo"
-          referrerPolicy="no-referrer"
-          className="w-10 h-10 rounded-lg object-cover border border-slate-200 dark:border-[#1e293b]"
-          id="sidebar-logo-image"
-        />
-        <div>
-          <h1 className="font-sans font-bold text-slate-900 dark:text-[#f8fafc] text-sm uppercase leading-none tracking-tight">LFA Sport</h1>
-          <span className="text-[10px] text-teal-600 dark:text-teal-400 font-bold font-mono tracking-wider uppercase">Portal systems</span>
+      <div className="p-6 border-b border-slate-200 dark:border-[#1e293b] flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <img 
+            src={lfaLogo}
+            alt="LFA Logo"
+            referrerPolicy="no-referrer"
+            className="w-10 h-10 rounded-lg object-cover border border-slate-200 dark:border-[#1e293b]"
+            id="sidebar-logo-image"
+          />
+          <div>
+            <h1 className="font-sans font-bold text-slate-900 dark:text-[#f8fafc] text-sm uppercase leading-none tracking-tight">LFA Sport</h1>
+            <span className="text-[10px] text-teal-600 dark:text-teal-400 font-bold font-mono tracking-wider uppercase">Portal systems</span>
+          </div>
         </div>
+        
+        {onCloseMobile && (
+          <button
+            onClick={onCloseMobile}
+            className="md:hidden p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-450 hover:text-slate-700 dark:hover:text-white transition-colors cursor-pointer"
+            id="btn-sidebar-close-mobile"
+            title="Close menu"
+          >
+            <X size={16} />
+          </button>
+        )}
       </div>
 
       {/* Tabs Navigation */}
