@@ -175,12 +175,6 @@ export default function Login({ onLoginSuccess, theme, onThemeToggle }: LoginPro
             <p className="text-[10px] text-slate-500 tracking-wide leading-relaxed">
               Authorized management credentials can be updated under settings menu anytime.
             </p>
-            <div className="p-2 border border-slate-800/20 bg-slate-900/40 rounded-lg">
-              <span className="text-[9px] font-mono text-teal-400 block font-semibold uppercase tracking-wider">Default Seed Credentials</span>
-              <p className="text-[10px] font-mono text-slate-400 mt-0.5">
-                Username: <span className="text-slate-200 font-bold">manager</span> &bull; Password: <span className="text-slate-200 font-bold">lfa2026</span>
-              </p>
-            </div>
           </div>
         </div>
       )}
